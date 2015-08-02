@@ -4,7 +4,7 @@ const path = require('path');
 
 const chalk = require('chalk');
 const koa = require('koa');
-let Router; // loaded on initialize
+let Routes; // loaded on initialize
 let View; // loaded on initialize
 
 const er = require('./errors');
@@ -16,7 +16,7 @@ let _router = null;
 
 
 function* Boing(next) {
-    let res = Router.resolve(_router, this.path, this.req);
+    let res = Routes.resolve(_router, this.path, this.req);
 
     if (res.status != null) {
         this.status = res.status;
@@ -37,7 +37,7 @@ Boing.initialize = function initialize(rootDir, app) {
         return Boing;
     };
 
-    Router = require('./Router');
+    Routes = require('./Routes');
     View = require('./View');
 
     rootDir = path.resolve(rootDir);
@@ -94,7 +94,7 @@ Object.defineProperties(Boing, {
             return _router;
         },
         set: function set(val) {
-            // FIXME: Check if val is a valid Router!
+            // FIXME: Check if val is a valid Routes object!
             _router = val;
         },
     },

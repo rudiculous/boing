@@ -2,5 +2,5 @@
 
 exports.Boing = require('./src/Boing');
 exports.BaseController = require('./src/BaseController');
-exports.Router = require('./src/Router');
+exports.Routes = require('./src/Routes');
 exports.View = require('./src/View');

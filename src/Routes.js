@@ -35,10 +35,10 @@ const resourceMapping = {
     },
 };
 
-class Router {
+class Routes {
 
     static draw(routes) {
-        Boing.router = new Router();
+        Boing.router = new Routes();
         routes.call(Boing.router);
     }
 
@@ -76,6 +76,14 @@ class Router {
                 baseTarget + resource
             );
         }
+    }
+
+    namespace(name, routes) {
+        throw new Error('Not yet implemented');
+    }
+
+    middleware(name) {
+        throw new Error('Not yet implemented');
     }
 
     _getTargetFromUri(uri) {
@@ -119,9 +127,9 @@ class Router {
 }
 
 for (let method of Route.methods) {
-    Router.prototype[method] = function (uri, target) {
+    Routes.prototype[method] = function (uri, target) {
         this._registerRoute(method, uri, target);
     }
 }
 
-exports = module.exports = Router;
+exports = module.exports = Routes;
