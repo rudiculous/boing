@@ -29,6 +29,8 @@ class Route {
             throw new er.NotInitializedError('Boing has not yet been initialized.');
         }
 
+        // TODO: Should we accept RegExps for uri?
+
         if (!uri.startsWith('/')) {
             uri = '/' + uri;
         }
@@ -89,6 +91,7 @@ class Route {
     *run(context, params) {
         let fn;
         let orgContext = context;
+        let query = context.request.query;
 
         if (typeof(this._target) === 'function') {
             fn = this._target;
@@ -107,8 +110,14 @@ class Route {
             if (key === 'request') key = 'req';
             if (key === 'response') key = 'res';
 
-            if (params[key] != null) {
+            if (key === 'params') {
+                args.push(params);
+            }
+            else if (params[key] != null) {
                 args.push(params[key]);
+            }
+            else if (query[key] != null) {
+                args.push(query[key]);
             }
             else if (orgContext[key] != null) {
                 args.push(orgContext[key]);
