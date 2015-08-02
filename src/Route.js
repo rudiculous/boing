@@ -121,7 +121,12 @@ class Route {
             }
         }
 
-        yield* fn.apply(context, args);
+        if (fn.constructor.name === 'GeneratorFunction') {
+            yield* fn.apply(context, args);
+        }
+        else {
+            fn.apply(context, args);
+        }
     }
 
     _parseUri(uri) {
