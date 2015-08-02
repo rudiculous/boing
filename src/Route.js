@@ -45,7 +45,7 @@ class Route {
             let parts = target.split('#');
             this._controllerPath = path.join(Boing.dirs.controllers, parts[0]);
             this._Controller = require(this._controllerPath);
-            this._method = parts[1];
+            this._action = parts[1];
         }
     }
 
@@ -95,7 +95,7 @@ class Route {
         }
         else {
             let controller = context = new this._Controller(context);
-            fn = controller[this._method];
+            fn = controller[this._action];
         }
 
         if (fn == null) {
