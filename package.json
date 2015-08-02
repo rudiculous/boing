@@ -21,6 +21,7 @@
     "escape-regexp": "*",
     "koa": "~0.21.*",
     "koa-compose": "~2.3.*",
-    "koa-static": "~1.4.*"
+    "koa-static": "~1.4.*",
+    "swig": "~1.4.*"
   }
 }

@@ -2,6 +2,8 @@
 
 const path = require('path');
 
+const swig = require('swig');
+
 const Boing = require('boing').Boing;
 
 
@@ -16,10 +18,8 @@ const View = {
     },
 
     render(response, view, data, opts) {
-        // FIXME
-        console.log('TODO: render %s', view, {data, opts});
-
-        response.body = 'TODO';
+        // TODO: Make the template engine configurable.
+        response.body = swig.renderFile(view + '.swig.html', data);
 
         return true;
     },
