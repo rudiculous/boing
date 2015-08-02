@@ -5,10 +5,12 @@ const path = require('path');
 const chalk = require('chalk');
 const koa = require('koa');
 let Router; // loaded on initialize
+let View; // loaded on initialize
 
 const er = require('./errors');
 
 
+let _app;
 let _initialized = false;
 let _router = null;
 
@@ -29,8 +31,15 @@ function* Boing(next) {
 }
 
 
-Boing.initialize = function initialize(rootDir) {
+Boing.initialize = function initialize(rootDir, app) {
+    Boing.initialize = function() {
+        console.warn('Boing has already been initialized!');
+        return Boing;
+    };
+
     Router = require('./Router');
+    View = require('./View');
+
     rootDir = path.resolve(rootDir);
     let appDir = path.join(rootDir, 'app');
 
@@ -45,15 +54,21 @@ Boing.initialize = function initialize(rootDir) {
 
     require(path.join(rootDir, 'routes'));
 
+    if (app == null) {
+        _app = koa();
+    }
+    else {
+        _app = app;
+    }
+
+    _app.use(Boing);
+
     _initialized = true;
 
     return Boing;
 };
 
 Boing.listen = function listen(port, host) {
-    let app = koa();
-    app.use(Boing);
-
     let server;
 
     let args = Array.prototype.slice.call(arguments);
@@ -63,10 +78,16 @@ Boing.listen = function listen(port, host) {
             chalk.yellow(server.address().port));
     });
 
-    server = app.listen.apply(app, args);
+    server = _app.listen.apply(_app, args);
 };
 
 Object.defineProperties(Boing, {
+    app: {
+        enumerable: true,
+        get: function get() {
+            return _app;
+        },
+    },
     router: {
         enumerable: true,
         get: function get() {

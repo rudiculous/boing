@@ -6,6 +6,7 @@ const escapeRE = require('escape-regexp');
 
 const Boing = require('./Boing');
 const er = require('./errors');
+const View = require('./View');
 
 
 const methods = [
@@ -48,6 +49,7 @@ class Route {
             this._controllerPath = path.join(Boing.dirs.controllers, parts[0]);
             this._Controller = require(this._controllerPath);
             this._action = parts[1];
+            this._view = path.join(Boing.dirs.views, parts[0], this._action);
         }
     }
 
@@ -92,6 +94,7 @@ class Route {
         let fn;
         let orgContext = context;
         let query = context.request.query;
+        let rendered = false;
 
         if (typeof(this._target) === 'function') {
             fn = this._target;
@@ -107,9 +110,6 @@ class Route {
 
         let args = [];
         for (let key of _getFunctionSignature(fn)) {
-            if (key === 'request') key = 'req';
-            if (key === 'response') key = 'res';
-
             if (key === 'params') {
                 args.push(params);
             }
@@ -130,11 +130,65 @@ class Route {
             }
         }
 
+        let _this = this;
+        let data = {};
+        Object.defineProperties(context, {
+            data: {
+                enumerable: true,
+                get: function get() {
+                    return data;
+                },
+                set: function set(val) {
+                    for (let key of Object.keys(val)) {
+                        data[key] = val[key];
+                    }
+                },
+            },
+            render: {
+                enumerable: true,
+                get: function get() {
+                    return function render(view, opts) {
+                        if (_this._view == null) {
+                            if (view == null) {
+                                console.error('Unable to determine view.', _this);
+                                return false;
+                            }
+
+                            if (opts == null) {
+                                opts = {};
+                            }
+                        }
+                        else {
+                            if (view == null) {
+                                view = _this._view;
+                            }
+                            else if (typeof(view) !== 'string') {
+                                opts = view;
+                                view = _this._view;
+                            }
+
+                            if (opts == null) {
+                                opts = {};
+                            }
+                        }
+
+                        rendered = View.render(orgContext.response, view, data, opts);
+
+                        return rendered;
+                    };
+                },
+            },
+        });
+
         if (fn.constructor.name === 'GeneratorFunction') {
             yield* fn.apply(context, args);
         }
         else {
             fn.apply(context, args);
+        }
+
+        if (!rendered) {
+            context.render();
         }
     }
 
