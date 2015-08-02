@@ -1,0 +1,24 @@
+{
+  "name": "boing",
+  "version": "0.0.1",
+  "description": "A Rails-inspired MVC for ES6.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rudiculous/boing.git"
+  },
+  "author": "RJ van der Weide <rj@rdcl.nl> (https://rdcl.nl)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rudiculous/boing/issues"
+  },
+  "homepage": "https://github.com/rudiculous/boing#readme",
+  "dependencies": {
+    "chalk": "~1.1.*",
+    "escape-regexp": "*",
+    "koa": "~0.21.*"
+  }
+}
