@@ -4,6 +4,8 @@ const path = require('path');
 
 const chalk = require('chalk');
 const koa = require('koa');
+const serve = require('koa-static');
+
 let Routes; // loaded on initialize
 let View; // loaded on initialize
 
@@ -16,7 +18,6 @@ let _router = null;
 
 
 function* Boing(next) {
-
     let res = Routes.resolve(_router, this.request);
 
     if (res.status != null) {
@@ -54,6 +55,7 @@ Boing.initialize = function initialize(rootDir, app) {
         middleware: path.join(appDir, 'middleware'),
         models: path.join(appDir, 'models'),
         views: path.join(appDir, 'views'),
+        public: path.join(rootDir, 'public'),
     };
 
     require(path.join(rootDir, 'routes'));
@@ -66,6 +68,7 @@ Boing.initialize = function initialize(rootDir, app) {
     }
 
     _app.use(Boing);
+    _app.use(serve(Boing.dirs.public));
 
     _initialized = true;
 
