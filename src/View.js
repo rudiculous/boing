@@ -18,10 +18,20 @@ const View = {
     },
 
     render(response, view, data, opts) {
-        // TODO: Make the template engine configurable.
-        response.body = swig.renderFile(view + '.swig.html', data);
+        // FIXME: Make the template engine configurable.
 
-        return true;
+        view = view + '.swig.html';
+
+        try {
+            response.body = swig.renderFile(view, data);
+
+            return true;
+        }
+        catch (er) {
+            console.error(er.message);
+        }
+
+        return false;
     },
 
 };
