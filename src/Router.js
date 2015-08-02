@@ -42,8 +42,8 @@ class Router {
         routes.call(Boing.router);
     }
 
-    static resolve(inst, request) {
-        return inst._resolve(request);
+    static resolve(inst, path, request) {
+        return inst._resolve(path, request);
     }
 
     constructor() {
@@ -91,15 +91,29 @@ class Router {
         this._routes.push(new Route(method, uri, target));
     }
 
-    _resolve(request) {
+    _resolve(path, request) {
+        let returnCode = 404;
+
         for (let route of this._routes) {
-            let match = route.match(request);
-            if (match) {
+            let res = route.match(path, request);
+            if (res.match) {
+                let match = res.match;
                 let params = route.getParams(match);
 
-                return {route, match, params};
+                return {
+                    resolved: {route, match, params},
+                    status: res.status,
+                };
+            }
+            else if (res.status === 405) {
+                returnCode = 405;
             }
         }
+
+        return {
+            resolved: null,
+            status: returnCode,
+        };
     }
 
 }

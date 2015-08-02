@@ -14,9 +14,13 @@ let _router = null;
 
 
 function* Boing(next) {
-    let resolved = Router.resolve(_router, this.req);
+    let res = Router.resolve(_router, this.path, this.req);
 
-    if (resolved == null) {
+    if (res.status != null) {
+        this.status = res.status;
+    }
+
+    if (res.resolved == null) {
         yield next;
     }
     else {
