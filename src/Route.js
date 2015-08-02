@@ -33,7 +33,7 @@ class Route {
             uri = '/' + uri;
         }
 
-        this._method = method;
+        this._method = method.toLowerCase();
         this._uri = uri;
         this._target = target;
 
@@ -51,9 +51,10 @@ class Route {
 
     match(path, request) {
         let m = this._pattern.exec(path);
+        let method = request.method.toLowerCase();
 
         if (m) {
-            if (this._method !== '*' && this._method !== request.method) {
+            if (this._method !== '*' && this._method !== method) {
                 return {
                     match: null,
                     status: 405,
@@ -103,7 +104,6 @@ class Route {
 
         let args = [];
         for (let key of _getFunctionSignature(fn)) {
-            console.log({key});
             if (key === 'request') key = 'req';
             if (key === 'response') key = 'res';
 
@@ -120,8 +120,6 @@ class Route {
                 args.push(null);
             }
         }
-
-        console.log(context.params);
 
         yield* fn.apply(context, args);
     }

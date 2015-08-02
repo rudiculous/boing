@@ -24,7 +24,7 @@ function* Boing(next) {
         yield next;
     }
     else {
-        yield* resolved.route.run(this, resolved.params);
+        yield* res.resolved.route.run(this, res.resolved.params);
     }
 }
 
@@ -50,17 +50,20 @@ Boing.initialize = function initialize(rootDir) {
     return Boing;
 };
 
-Boing.run = function run(port, host) {
-    if (port == null) port = 3072;
-
+Boing.listen = function listen(port, host) {
     let app = koa();
     app.use(Boing);
 
-    let server = app.listen(port, host, function () {
+    let server;
+
+    let args = Array.prototype.slice.call(arguments);
+    args.push(function () {
         console.log('Application running on %s:%s.',
             chalk.yellow(server.address().address),
             chalk.yellow(server.address().port));
     });
+
+    server = app.listen.apply(app, args);
 };
 
 Object.defineProperties(Boing, {
