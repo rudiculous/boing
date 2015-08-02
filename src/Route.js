@@ -135,10 +135,10 @@ class Route {
         Object.defineProperties(context, {
             data: {
                 enumerable: true,
-                get: function get() {
+                get() {
                     return data;
                 },
-                set: function set(val) {
+                set(val) {
                     for (let key of Object.keys(val)) {
                         data[key] = val[key];
                     }
@@ -146,7 +146,7 @@ class Route {
             },
             render: {
                 enumerable: true,
-                get: function get() {
+                get() {
                     return function render(view, opts) {
                         if (_this._view == null) {
                             if (view == null) {

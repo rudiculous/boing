@@ -91,16 +91,16 @@ Boing.listen = function listen(port, host) {
 Object.defineProperties(Boing, {
     app: {
         enumerable: true,
-        get: function get() {
+        get() {
             return _app;
         },
     },
     router: {
         enumerable: true,
-        get: function get() {
+        get() {
             return _router;
         },
-        set: function set(val) {
+        set(val) {
             // FIXME: Check if val is a valid Routes object!
             _router = val;
         },
