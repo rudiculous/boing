@@ -16,17 +16,21 @@ let _router = null;
 
 
 function* Boing(next) {
-    let res = Routes.resolve(_router, this.path, this.req);
+
+    let res = Routes.resolve(_router, this.request);
 
     if (res.status != null) {
         this.status = res.status;
     }
 
     if (res.resolved == null) {
-        yield next;
+        yield* next;
     }
     else {
-        yield* res.resolved.route.run(this, res.resolved.params);
+        yield* Routes.middleware(
+            _router, this,
+            res.resolved.route.run(this, res.resolved.params)
+        );
     }
 }
 

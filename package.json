@@ -19,6 +19,7 @@
   "dependencies": {
     "chalk": "~1.1.*",
     "escape-regexp": "*",
-    "koa": "~0.21.*"
+    "koa": "~0.21.*",
+    "koa-compose": "~2.3.*"
   }
 }

@@ -1,5 +1,9 @@
 "use strict";
 
+const path = require('path');
+
+const compose = require('koa-compose');
+
 const Boing = require('./Boing');
 const Route = require('./Route');
 
@@ -40,14 +44,20 @@ class Routes {
     static draw(routes) {
         Boing.router = new Routes();
         routes.call(Boing.router);
+        Boing.router._mwComposed = compose(Boing.router._middlewares);
     }
 
-    static resolve(inst, path, request) {
-        return inst._resolve(path, request);
+    static resolve(inst, request) {
+        return inst._resolve(request);
+    }
+
+    static *middleware(inst, context, next) {
+        yield* inst._middleware(context, next);
     }
 
     constructor() {
         this._routes = [];
+        this._middlewares = [];
     }
 
     root(target) {
@@ -82,8 +92,21 @@ class Routes {
         throw new Error('Not yet implemented');
     }
 
-    middleware(name) {
-        throw new Error('Not yet implemented');
+    middleware(mw) {
+        if (typeof(mw) === 'string') {
+            mw = require(path.join(Boing.dirs.middleware, mw));
+        }
+        if (typeof(mw) === 'function' &&
+            mw.constructor.name !== 'GeneratorFunction'
+        ) {
+            let fn = mw;
+            mw = function* (next) {
+                fn.call(this, next);
+                yield* next;
+            };
+        }
+
+        this._middlewares.push(mw);
     }
 
     _getTargetFromUri(uri) {
@@ -99,11 +122,11 @@ class Routes {
         this._routes.push(new Route(method, uri, target));
     }
 
-    _resolve(path, request) {
+    _resolve(request) {
         let returnCode = 404;
 
         for (let route of this._routes) {
-            let res = route.match(path, request);
+            let res = route.match(request);
             if (res.match) {
                 let match = res.match;
                 let params = route.getParams(match);
@@ -122,6 +145,10 @@ class Routes {
             resolved: null,
             status: returnCode,
         };
+    }
+
+    *_middleware(context, next) {
+        yield* this._mwComposed.call(context, next);
     }
 
 }

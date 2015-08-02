@@ -53,8 +53,8 @@ class Route {
         }
     }
 
-    match(path, request) {
-        let m = this._pattern.exec(path);
+    match(request) {
+        let m = this._pattern.exec(request.path);
         let method = request.method.toLowerCase();
 
         if (m) {
