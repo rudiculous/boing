@@ -46,18 +46,22 @@ Boing.initialize = function initialize(rootDir, app) {
     View = require('./View');
 
     rootDir = path.resolve(rootDir);
+
     let appDir = path.join(rootDir, 'app');
 
     Boing.dirs = {
         root: rootDir,
         app: appDir,
+        config: path.join(rootDir, 'config'),
+        public: path.join(rootDir, 'public'),
+
         controllers: path.join(appDir, 'controllers'),
         middleware: path.join(appDir, 'middleware'),
         models: path.join(appDir, 'models'),
         views: path.join(appDir, 'views'),
-        public: path.join(rootDir, 'public'),
     };
 
+    require(path.join(Boing.dirs.config, 'initializers'));
     require(path.join(rootDir, 'routes'));
 
     if (app == null) {
