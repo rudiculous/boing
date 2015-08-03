@@ -17,8 +17,11 @@
   },
   "homepage": "https://github.com/rudiculous/boing#readme",
   "dependencies": {
+    "bookshelf": "~0.8.*",
     "chalk": "~1.1.*",
     "escape-regexp": "*",
+    "js-yaml": "~3.3.*",
+    "knex": "~0.8.*",
     "koa": "~0.21.*",
     "koa-compose": "~2.3.*",
     "koa-static": "~1.4.*",

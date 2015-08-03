@@ -1,11 +1,14 @@
 "use strict";
 
+const fs = require('fs');
 const path = require('path');
 
 const chalk = require('chalk');
 const koa = require('koa');
 const serve = require('koa-static');
+const yaml = require('js-yaml');
 
+let DB; // loaded on initialize
 let Routes; // loaded on initialize
 let View; // loaded on initialize
 
@@ -13,6 +16,7 @@ const er = require('./errors');
 
 
 let _app;
+let _env;
 let _initialized = false;
 let _router = null;
 
@@ -36,12 +40,18 @@ function* Boing(next) {
 }
 
 
-Boing.initialize = function initialize(rootDir, app) {
+Boing.initialize = function initialize(rootDir, environment, app) {
     Boing.initialize = function() {
         console.warn('Boing has already been initialized!');
         return Boing;
     };
 
+    if (environment == null) {
+        environment = 'development';
+    }
+    _env = environment;
+
+    DB = require('./DB');
     Routes = require('./Routes');
     View = require('./View');
 
@@ -60,6 +70,16 @@ Boing.initialize = function initialize(rootDir, app) {
         models: path.join(appDir, 'models'),
         views: path.join(appDir, 'views'),
     };
+
+    {
+        let databaseConfigFile = path.join(Boing.dirs.config, 'database.yml');
+        let databaseConfig = yaml.safeLoad(fs.readFileSync(databaseConfigFile, 'utf8'));
+        let connection = databaseConfig[_env];
+        let client = connection.client;
+        delete connection.client;
+
+        DB.initialize(client, connection);
+    }
 
     require(path.join(Boing.dirs.config, 'initializers'));
     require(path.join(rootDir, 'routes'));
