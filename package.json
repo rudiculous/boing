@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/rudiculous/boing#readme",
   "dependencies": {
+    "@rdcl/function-signature": "~1.0.*",
     "bookshelf": "~0.8.*",
     "chalk": "~1.1.*",
     "escape-regexp": "*",
