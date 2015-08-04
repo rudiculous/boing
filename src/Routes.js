@@ -1,43 +1,11 @@
 "use strict";
 
-const path = require('path');
-
 const compose = require('koa-compose');
 
 const Boing = require('./Boing');
 const Route = require('./Route');
+const RoutingContext = require('./RoutingContext');
 
-
-const resourceMapping = {
-    index: {
-        method: 'get',
-        uri: '',
-    },
-    new: {
-        method: 'get',
-        uri: '/new',
-    },
-    create: {
-        method: 'post',
-        uri: '',
-    },
-    show: {
-        method: 'get',
-        uri: '/:id',
-    },
-    edit: {
-        method: 'get',
-        uri: '/:id/edit',
-    },
-    update: {
-        method: 'put',
-        uri: '/:id',
-    },
-    destroy: {
-        method: 'delete',
-        uri: '/:id',
-    },
-};
 
 class Routes {
 
@@ -54,64 +22,16 @@ class Routes {
 
     getContext() {
         let self = this;
-        let context = {
-            root(target) {
-                context.get('/', target);
-            },
 
-            resources(name, opts) {
-                if (opts == null) opts = {};
-                if (opts.uri == null) opts.uri = '/' + name;
-                if (opts.controller == null) opts.controller = name;
-                if (opts.only == null) opts.only = [
-                    'index', 'new', 'create', 'show', 'edit', 'update', 'destroy'
-                ];
-
-                if (opts.uri.endsWith('/')) opts.uri = opts.uri.substring(0, opts.uri.length - 1);
-                let baseTarget = opts.controller + '#';
-
-                for (let resource of opts.only) {
-                    let mapping = resourceMapping[resource];
-
-                    if (mapping == null) continue;
-
-                    self.registerRoute(
-                        mapping.method,
-                        opts.uri + mapping.uri,
-                        baseTarget + resource
-                    );
-                }
-            },
-
-            namespace(name, routes) {
-                throw new Error('Not yet implemented');
-            },
-
-            use(mw) {
-                if (typeof(mw) === 'string') {
-                    mw = require(path.join(Boing.dirs.middleware, mw));
-                }
-                if (typeof(mw) === 'function' &&
-                    mw.constructor.name !== 'GeneratorFunction'
-                ) {
-                    let fn = mw;
-                    mw = function* (next) {
-                        fn.call(this, next);
-                        yield* next;
-                    };
-                }
-
-                self._middlewares.push(mw);
-            },
-        };
-
-        for (let method of Route.methods) {
-            context[method] = function (uri, target) {
+        return new RoutingContext(
+            null,
+            function registerRoute(method, uri, target) {
                 self.registerRoute(method, uri, target);
+            },
+            function registerMiddleware(mw) {
+                self._middlewares.push(mw);
             }
-        }
-
-        return context;
+        );
     }
 
     getTargetFromUri(uri) {
