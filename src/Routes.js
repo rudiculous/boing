@@ -92,7 +92,7 @@ class Routes {
         throw new Error('Not yet implemented');
     }
 
-    middleware(mw) {
+    use(mw) {
         if (typeof(mw) === 'string') {
             mw = require(path.join(Boing.dirs.middleware, mw));
         }
