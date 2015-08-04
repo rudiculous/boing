@@ -43,16 +43,8 @@ class Routes {
 
     static draw(routes) {
         Boing.router = new Routes();
-        routes.call(Boing.router);
+        routes.call(Boing.router.getContext());
         Boing.router._mwComposed = compose(Boing.router._middlewares);
-    }
-
-    static resolve(inst, request) {
-        return inst._resolve(request);
-    }
-
-    static *middleware(inst, context, next) {
-        yield* inst._middleware(context, next);
     }
 
     constructor() {
@@ -60,69 +52,82 @@ class Routes {
         this._middlewares = [];
     }
 
-    root(target) {
-        this.get('/', target);
-    }
+    getContext() {
+        let self = this;
+        let context = {
+            root(target) {
+                context.get('/', target);
+            },
 
-    resources(name, opts) {
-        if (opts == null) opts = {};
-        if (opts.uri == null) opts.uri = '/' + name;
-        if (opts.controller == null) opts.controller = name;
-        if (opts.only == null) opts.only = [
-            'index', 'new', 'create', 'show', 'edit', 'update', 'destroy'
-        ];
+            resources(name, opts) {
+                if (opts == null) opts = {};
+                if (opts.uri == null) opts.uri = '/' + name;
+                if (opts.controller == null) opts.controller = name;
+                if (opts.only == null) opts.only = [
+                    'index', 'new', 'create', 'show', 'edit', 'update', 'destroy'
+                ];
 
-        if (opts.uri.endsWith('/')) opts.uri = opts.uri.substring(0, opts.uri.length - 1);
-        let baseTarget = opts.controller + '#';
+                if (opts.uri.endsWith('/')) opts.uri = opts.uri.substring(0, opts.uri.length - 1);
+                let baseTarget = opts.controller + '#';
 
-        for (let resource of opts.only) {
-            let mapping = resourceMapping[resource];
+                for (let resource of opts.only) {
+                    let mapping = resourceMapping[resource];
 
-            if (mapping == null) continue;
+                    if (mapping == null) continue;
 
-            this._registerRoute(
-                mapping.method,
-                opts.uri + mapping.uri,
-                baseTarget + resource
-            );
+                    self.registerRoute(
+                        mapping.method,
+                        opts.uri + mapping.uri,
+                        baseTarget + resource
+                    );
+                }
+            },
+
+            namespace(name, routes) {
+                throw new Error('Not yet implemented');
+            },
+
+            use(mw) {
+                if (typeof(mw) === 'string') {
+                    mw = require(path.join(Boing.dirs.middleware, mw));
+                }
+                if (typeof(mw) === 'function' &&
+                    mw.constructor.name !== 'GeneratorFunction'
+                ) {
+                    let fn = mw;
+                    mw = function* (next) {
+                        fn.call(this, next);
+                        yield* next;
+                    };
+                }
+
+                self._middlewares.push(mw);
+            },
+        };
+
+        for (let method of Route.methods) {
+            context[method] = function (uri, target) {
+                self.registerRoute(method, uri, target);
+            }
         }
+
+        return context;
     }
 
-    namespace(name, routes) {
-        throw new Error('Not yet implemented');
-    }
-
-    use(mw) {
-        if (typeof(mw) === 'string') {
-            mw = require(path.join(Boing.dirs.middleware, mw));
-        }
-        if (typeof(mw) === 'function' &&
-            mw.constructor.name !== 'GeneratorFunction'
-        ) {
-            let fn = mw;
-            mw = function* (next) {
-                fn.call(this, next);
-                yield* next;
-            };
-        }
-
-        this._middlewares.push(mw);
-    }
-
-    _getTargetFromUri(uri) {
+    getTargetFromUri(uri) {
         let li = uri.lastIndexOf('/');
         return uri.substring(0, li) + '#' + uri.substring(li + 1);
     }
 
-    _registerRoute(method, uri, target) {
+    registerRoute(method, uri, target) {
         if (target == null) {
-            target = this._getTargetFromUri(uri);
+            target = this.getTargetFromUri(uri);
         }
 
         this._routes.push(new Route(method, uri, target));
     }
 
-    _resolve(request) {
+    resolve(request) {
         let returnCode = 404;
 
         for (let route of this._routes) {
@@ -147,16 +152,10 @@ class Routes {
         };
     }
 
-    *_middleware(context, next) {
+    *middleware(context, next) {
         yield* this._mwComposed.call(context, next);
     }
 
-}
-
-for (let method of Route.methods) {
-    Routes.prototype[method] = function (uri, target) {
-        this._registerRoute(method, uri, target);
-    }
 }
 
 exports = module.exports = Routes;

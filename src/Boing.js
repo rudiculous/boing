@@ -22,7 +22,7 @@ let _router = null;
 
 
 function* Boing(next) {
-    let res = Routes.resolve(_router, this.request);
+    let res = Boing.router.resolve(this.request);
 
     if (res.status != null) {
         this.status = res.status;
@@ -32,8 +32,8 @@ function* Boing(next) {
         yield* next;
     }
     else {
-        yield* Routes.middleware(
-            _router, this,
+        yield* Boing.router.middleware(
+            this,
             res.resolved.route.run(this, res.resolved.params)
         );
     }
