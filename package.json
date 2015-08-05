@@ -4,7 +4,7 @@
   "description": "A Rails-inspired MVC for ES6.",
   "main": "index.js",
   "bin": {
-    "boing": "node boing.js"
+    "boing": "bin/boing"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
