@@ -1,0 +1,14 @@
+default: &default
+  client: sqlite3
+
+development:
+  <<: *default
+  filename: db/development.sqlite
+
+test:
+  <<: *default
+  filename: db/test.sqlite
+
+production:
+  <<: *default
+  filename: db/production.sqlite

@@ -1,6 +1,6 @@
 {
   "name": "boing",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A Rails-inspired MVC for ES6.",
   "main": "index.js",
   "scripts": {
