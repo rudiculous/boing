@@ -3,6 +3,9 @@
   "version": "0.0.3",
   "description": "A Rails-inspired MVC for ES6.",
   "main": "index.js",
+  "bin": {
+    "boing": "node boing.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
