@@ -1,4 +1,17 @@
 #!/usr/bin/env node
 "use strict";
 
-console.log('TODO');
+const commands = require('../src/cli/commands');
+
+const args = require('yargs')
+    .help('help')
+    .alias('h', 'help')
+
+    .count('verbose')
+    .alias('v', 'verbose')
+
+    .command('new', 'Sets up a new Boing project.', commands.get('new'))
+
+    .argv;
+
+console.log(args);
