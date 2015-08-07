@@ -7,7 +7,7 @@
     "boing": "bin/boing"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --reporter spec"
   },
   "repository": {
     "type": "git",
@@ -34,5 +34,9 @@
   },
   "engines": {
     "iojs": ">=2.0"
+  },
+  "devDependencies": {
+    "chai": "~3.2.*",
+    "mocha": "~2.2.*"
   }
 }
