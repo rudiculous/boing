@@ -1,6 +1,6 @@
 {
   "name": "boing",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A Rails-inspired MVC for ES6.",
   "main": "index.js",
   "bin": {
@@ -31,5 +31,8 @@
     "koa-static": "~1.4.*",
     "swig": "~1.4.*",
     "yargs": "~3.17.*"
+  },
+  "engines": {
+    "iojs": ">=2.0"
   }
 }
