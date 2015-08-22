@@ -6,6 +6,6 @@ let env = process.env.ENV || 'development';
 let host = process.env.HOST || 'localhost';
 let port = process.env.PORT || 3000;
 
-require('boing').Boing
+require('@rdcl/boing').Boing
     .initialize(__dirname, env)
     .listen(port, host);

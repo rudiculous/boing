@@ -1,6 +1,6 @@
 "use strict"
 
-{BaseController} = require 'boing'
+{BaseController} = require '@rdcl/boing'
 
 class Base extends BaseController
 

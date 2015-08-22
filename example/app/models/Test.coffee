@@ -1,6 +1,6 @@
 "use strict"
 
-{orm: {Model}} = require 'boing'
+{orm: {Model}} = require '@rdcl/boing'
 
 Test = Model.extend
   tableName: 'test'

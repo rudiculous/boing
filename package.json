@@ -1,6 +1,6 @@
 {
-  "name": "boing",
-  "version": "0.0.4",
+  "name": "@rdcl/boing",
+  "version": "0.0.5",
   "description": "A Rails-inspired MVC for ES6.",
   "main": "index.js",
   "bin": {
@@ -20,23 +20,23 @@
   },
   "homepage": "https://github.com/rudiculous/boing#readme",
   "dependencies": {
-    "@rdcl/function-signature": "~1.0.*",
-    "bookshelf": "~0.8.*",
-    "chalk": "~1.1.*",
+    "@rdcl/function-signature": "1.0.*",
+    "bookshelf": "0.8.*",
+    "chalk": "1.1.*",
     "escape-regexp": "*",
-    "js-yaml": "~3.3.*",
-    "knex": "~0.8.*",
-    "koa": "~0.21.*",
-    "koa-compose": "~2.3.*",
-    "koa-static": "~1.4.*",
-    "swig": "~1.4.*",
-    "yargs": "~3.17.*"
+    "js-yaml": "3.3.*",
+    "knex": "0.8.*",
+    "koa": "0.21.*",
+    "koa-compose": "2.3.*",
+    "koa-static": "1.4.*",
+    "swig": "1.4.*",
+    "yargs": "3.17.*"
   },
   "engines": {
     "iojs": ">=2.0"
   },
   "devDependencies": {
-    "chai": "~3.2.*",
-    "mocha": "~2.2.*"
+    "chai": "3.2.*",
+    "mocha": "2.2.*"
   }
 }

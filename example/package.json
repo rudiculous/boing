@@ -1,11 +1,11 @@
 {
   "private": true,
   "dependencies": {
-    "boing": "0.0.2",
-    "coffee-script": "~1.9.*",
-    "dotenv": "~1.2.*",
-    "moment": "~2.10.*",
-    "ms": "~0.7.*",
-    "sqlite3": "~3.0.*"
+    "@rdcl/boing": "0.0.*",
+    "coffee-script": "1.9.*",
+    "dotenv": "1.2.*",
+    "moment": "2.10.*",
+    "ms": "0.7.*",
+    "sqlite3": "3.0.*"
   }
 }

@@ -1,6 +1,6 @@
 "use strict"
 
-{Routes, View: {SimpleView}} = require 'boing'
+{Routes, View: {SimpleView}} = require '@rdcl/boing'
 
 Routes.draw ->
   @use 'requestLogger'
